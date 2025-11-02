@@ -2,11 +2,21 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="shortcut icon" href="/public/language.svg" type="image/x-icon">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="public/language.svg" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="description" content="Application de traduction gratuite et rapide" />
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    
     <title>Translator</title>
+    
+    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Configuration Tailwind -->
     <script>
       tailwind.config = {
         darkMode: 'class',
@@ -16,5 +26,16 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('✅ Service Worker enregistré'))
+            .catch(err => console.log('❌ Erreur SW:', err));
+        });
+      }
+    </script>
   </body>
 </html>
