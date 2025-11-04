@@ -33,32 +33,48 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
 
-  // Charger le mode sombre au démarrage
+  // Charger le mode sombre et l'historique au démarrage
   useEffect(() => {
-    const savedDarkMode = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    setDarkMode(savedDarkMode);
-    document.documentElement.classList.toggle("dark", savedDarkMode);
+    // Mode sombre
+    const savedDarkMode = localStorage.getItem("strawTranslate_darkMode");
+    const isDark = savedDarkMode
+      ? JSON.parse(savedDarkMode)
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    setDarkMode(isDark);
+    document.documentElement.classList.toggle("dark", isDark);
+
+    // Historique
+    const savedHistory = localStorage.getItem("strawTranslate_history");
+    if (savedHistory) {
+      try {
+        setHistory(JSON.parse(savedHistory));
+      } catch (error) {
+        console.error("Erreur chargement historique:", error);
+      }
+    }
   }, []);
 
-  // Basculer le mode sombre
+  // Sauvegarder le mode sombre
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
     document.documentElement.classList.toggle("dark", newMode);
+    localStorage.setItem("strawTranslate_darkMode", JSON.stringify(newMode));
   };
 
-  // Ajouter à l'historique
+  // Ajouter à l'historique (avec sauvegarde)
   const addToHistory = (item) => {
     const newHistory = [item, ...history.slice(0, 9)];
     setHistory(newHistory);
+    localStorage.setItem("strawTranslate_history", JSON.stringify(newHistory));
   };
 
-  // Effacer l'historique
+  // Effacer l'historique (avec suppression localStorage)
   const clearHistory = () => {
     setHistory([]);
     setShowHistory(false);
+    localStorage.removeItem("strawTranslate_history");
   };
 
   // Sélectionner depuis l'historique
@@ -294,8 +310,15 @@ export default function App() {
               disabled={isLoading}
               onKeyDown={handleKeyPress}
             />
-            <div className="mt-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-right">
-              {sourceText.length} caractères
+            <div className="mt-2 flex justify-between items-center text-xs sm:text-sm">
+              <span className="text-gray-500 dark:text-gray-400">
+                {sourceText.length} caractères
+              </span>
+              {sourceText.length > 500 && (
+                <span className="text-amber-600 dark:text-amber-400 font-medium">
+                  ⚠️ Texte long (traduction en plusieurs parties)
+                </span>
+              )}
             </div>
           </div>
 
