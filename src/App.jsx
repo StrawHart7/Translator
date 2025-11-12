@@ -436,7 +436,7 @@ export default function App() {
 
       {/* Footer - Responsive */}
       <footer className="mt-8 sm:mt-12 pb-4 sm:pb-6 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 px-4">
-        <p>Propulsé par MyMemory • Traduction gratuite</p>
+        <p>Propulsé par Google Translate • Traduction gratuite</p>
       </footer>
     </div>
   );
